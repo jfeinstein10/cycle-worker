@@ -1,0 +1,7 @@
+{
+  "extends": "es/2015/client",
+  "env": {
+    "browser": true,
+    "node": true
+  }
+}
