@@ -8,23 +8,24 @@
     "mocha": "mocha --compilers js:babel-core/register src",
     "test": "npm run eslint && npm run mocha",
     "clean": "rm -rf dist/*",
-    "build_main": "browserify src/main.js -t [ babelify --presets [ es2015 ] ] -o dist/main.js",
-    "build_worker": "browserify src/worker.js -t [ babelify --presets [ es2015 ] ] -o dist/worker.js",
-    "build": "npm run build_main && npm run build_worker",
-    "serve": "webpack-dev-server --watch"
+    "build_main": "browserify src/main.js --debug -t [ babelify --presets [ es2015 ] ] -o dist/main.js",
+    "build_worker": "browserify src/worker.js --debug -t [ babelify --presets [ es2015 ] ] -o dist/worker.js",
+    "build": "npm run build_main && npm run build_worker"
   },
   "author": "Jeremy Feinstein <j.feinstein10@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "@cycle/core": "^6.0.0",
     "@cycle/dom": "^9.0.1",
+    "dom-delegator": "^13.1.0",
     "html-to-vdom": "^0.7.0",
     "rx": "^4.0.7",
     "rx-dom": "^7.0.3",
     "underscore": "^1.8.3",
     "vdom-as-json": "^1.0.8",
     "vdom-serialized-patch": "^1.0.3",
-    "virtual-dom": "^2.1.1"
+    "virtual-dom": "^2.1.1",
+    "vtree-select": "^2.0.0"
   },
   "devDependencies": {
     "autoprefixer-loader": "^3.1.0",
