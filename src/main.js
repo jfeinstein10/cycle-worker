@@ -28,12 +28,14 @@ const workerRun = function (container, script) {
   // Send all events on the container to the worker
   const registerEvents = function (node) {
     const eventNodes = Array.prototype.slice.call(node.querySelectorAll('[cycle-events]'));
+
     if (node.getAttribute('cycle-events')) {
       eventNodes.push(node);
     }
     const eventObservables = _.flatten(_.map(eventNodes, (eventNode) => {
       const events = eventNode.getAttribute('cycle-events');
-      return _.map(events.split(' '), (event) => Rx.Observable.fromEvent(eventNode, event.substring(2)));
+
+      return _.map(events.split(' '), (event) => Rx.Observable.fromEvent(eventNode, event));
     }));
     const eventStream$ = Rx.Observable.merge(eventObservables).map((e) => {
       const object = _.object(_.chain(e).
