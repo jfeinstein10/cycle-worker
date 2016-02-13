@@ -1,12 +1,10 @@
 'use strict';
 
-const _ = require('underscore');
 const Rx = require('rx');
 const { transposeVTree } = require('@cycle/dom/lib/transposition');
-const VNode = require('virtual-dom/vnode/vnode');
-const diff = require('virtual-dom/diff');
+const { diff } = require('virtual-dom');
 const fromJson = require('vdom-as-json/fromJson');
-const serializePatch = require('vdom-serialized-patch/serialize');
+const { serialize } = require('vdom-serialized-patch');
 const select = require('vtree-select');
 
 const guid = function () {
@@ -21,27 +19,6 @@ const guid = function () {
 const message = function (type, data) {
   return { type, data };
 };
-
-// const transposeVTree = function (vtree) {
-//   if (typeof vtree.subscribe === 'function') {
-//     return vtree.flatMapLatest(transposeVTree);
-//   } else if (vtree.type === 'VirtualText') {
-//     return Rx.Observable.just(vtree);
-//   } else if (vtree.type === 'VirtualNode' && Array.isArray(vtree.children) && vtree.children.length > 0) {
-//     return Rx.Observable.combineLatest(vtree.children.map(transposeVTree), function () {
-//       let arr, key, len;
-//
-//       for (len = arguments.length, arr = Array(len), key = 0; key < len; key++) {
-//         arr[key] = arguments[key];
-//       }
-//       return new VNode(vtree.tagName, vtree.properties, arr, vtree.key, vtree.namespace);
-//     });
-//   } else if (vtree.type === 'VirtualNode' || vtree.type === 'Widget' || vtree.type === 'Thunk') {
-//     return Rx.Observable.just(vtree);
-//   } else {
-//     throw new Error('Unhandled case in transposeVTree()');
-//   }
-// };
 
 const addCycleIds = function (vtree, id) {
   if (vtree.properties.attributes && vtree.properties.attributes['cycle-events']) {
@@ -152,7 +129,7 @@ const makeWorkerDriver = function () {
       }).
       pairwise().
       flatMap(([ prevVTree, nextVTree ]) => {
-        const patch = serializePatch(diff(prevVTree, nextVTree));
+        const patch = serialize(diff(prevVTree, nextVTree));
 
         selfObserver$.onNext(message('patch', patch));
         return Rx.Observable.just(nextVTree);

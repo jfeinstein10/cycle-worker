@@ -2,10 +2,9 @@
 
 const _ = require('underscore');
 const Rx = require('rx-dom');
-const VNode = require('virtual-dom/vnode/vnode');
-const VText = require('virtual-dom/vnode/vtext');
+const { VNode, VText } = require('virtual-dom');
 const initializeConverter = require('html-to-vdom');
-const applyPatch = require('vdom-serialized-patch/patch');
+const { patch } = require('vdom-serialized-patch');
 const toJson = require('vdom-as-json/toJson');
 
 // const events = `blur focus focusin focusout load resize scroll unload click
@@ -66,7 +65,7 @@ const workerRun = function (container, script) {
   const handlers = {
     patch: (data) => {
       unregisterEvents();
-      domContainer = applyPatch(domContainer, data);
+      domContainer = patch(domContainer, data);
       registerEvents(domContainer);
     }
   };
