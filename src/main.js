@@ -44,7 +44,11 @@ const workerRun = function (container, script) {
         map((key) => [ key, e[key] ]).
         value());
 
-      return { id: e.target.getAttribute('cycle-id'), event: object };
+      return {
+        id: e.target.getAttribute('cycle-id'),
+        type: e.type,
+        value: e.target.value
+      };
     });
 
     eventStreamSubscription = eventStream$.subscribe((data) => {

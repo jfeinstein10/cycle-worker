@@ -89,6 +89,9 @@ const makeEventsSelector = function (rootEl$, events$, namespace) {
       map((rootEl) => {
         return select(namespace.join(` `))(rootEl);
       }).
+      filter((elements) => {
+        return elements !== null;
+      }).
       flatMapLatest((elements) => {
         if (elements.type === 'VirtualNode') {
           elements = [ elements ];
@@ -97,7 +100,7 @@ const makeEventsSelector = function (rootEl$, events$, namespace) {
           const id = element.properties.attributes['cycle-id'];
 
           return events$.filter((data) => {
-            return data.id === id && data.event.type === eventName;
+            return data.id === id && data.type === eventName;
           });
         }));
       }).share();
@@ -110,18 +113,20 @@ const makeElementSelector = function (rootEl$, events$, namespace) {
       throw new Error(`DOM driver's select() expects the argument to be a ` +
         `string as a CSS selector`);
     }
+    const innerNamespace = namespace.slice(0);
+
     selector = selector.trim();
     if (selector !== `:root`) {
-      namespace = namespace.concat(selector);
+      innerNamespace.push(selector);
     }
     const element$ = rootEl$.map((rootEl) => {
-      return select(namespace.join(` `))(rootEl);
+      return select(innerNamespace.join(` `))(rootEl);
     });
 
     return {
       observable: element$,
-      select: makeElementSelector(rootEl$, events$, namespace),
-      events: makeEventsSelector(rootEl$, events$, namespace)
+      select: makeElementSelector(rootEl$, events$, innerNamespace),
+      events: makeEventsSelector(rootEl$, events$, innerNamespace)
     };
   };
 };

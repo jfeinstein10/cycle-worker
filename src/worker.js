@@ -2,7 +2,7 @@
 
 const Rx = require('rx');
 const { run } = require('@cycle/core');
-const { div, h1, button } = require('@cycle/dom');
+const { div, h1, button, input } = require('@cycle/dom');
 const { makeWorkerDriver } = require('./cycle-worker');
 
 const main = function ({ DOM }) {
@@ -10,13 +10,22 @@ const main = function ({ DOM }) {
   const newValue$ = DOM.select(`.btn`).events(`click`).map((e) => {
     return 1;
   });
+  const input$ = Rx.Observable.just(``).concat(DOM.select(`#input`).events(`input`).map((e) => {
+    return e.value;
+  }));
   const value$ = initialValue$.concat(newValue$).scan((x, y) => {
     return x + y;
   });
-  // const interval$ = Rx.Observable.interval(1000).map(i => `${i}`);
-  const vtree$ = value$.map((i) => {
+  const vtree$ = Rx.Observable.combineLatest(input$, value$).map(([v, i]) => {
     return div([
       h1(`${i} clicks`),
+      h1(`${v}`),
+      input(`#input`, {
+        type: 'text',
+        attributes: {
+          'cycle-events': 'input'
+        }
+      }),
       button(`.btn`, {
         attributes: {
           'cycle-events': 'click'
@@ -24,6 +33,7 @@ const main = function ({ DOM }) {
       }, `Click me!`)
     ]);
   });
+
   vtree$.subscribe();
 
   return {
