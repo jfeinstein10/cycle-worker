@@ -6,17 +6,14 @@ const { div, h1, button, input } = require('@cycle/dom');
 const { makeWorkerDriver } = require('./cycle-worker');
 
 const main = function ({ DOM }) {
-  const initialValue$ = Rx.Observable.just(0);
-  const newValue$ = DOM.select(`.btn`).events(`click`).map((e) => {
-    return 1;
-  });
-  const input$ = Rx.Observable.just(``).concat(DOM.select(`#input`).events(`input`).map((e) => {
-    return e.value;
-  }));
-  const value$ = initialValue$.concat(newValue$).scan((x, y) => {
-    return x + y;
-  });
-  const vtree$ = Rx.Observable.combineLatest(input$, value$).map(([v, i]) => {
+  const input$ = DOM.select(`#input`).events(`input`).map((e) => e.value).
+    startWith(``);
+  const btn$ = DOM.select(`.btn`).events(`click`).map(() => 1).
+    startWith(0).
+    scan((x, y) => {
+      return x + y;
+    });
+  const vtree$ = Rx.Observable.combineLatest(input$, btn$).map(([ v, i ]) => {
     return div([
       h1(`${i} clicks`),
       h1(`${v}`),

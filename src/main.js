@@ -7,12 +7,6 @@ const initializeConverter = require('html-to-vdom');
 const { patch } = require('vdom-serialized-patch');
 const { toJson } = require('vdom-as-json');
 
-// const events = `blur focus focusin focusout load resize scroll unload click
-//  dblclick mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave
-//  change select submit keydown keypress keyup error contextmenu
-//  pointerdown pointerup pointermove pointerover pointerout pointerenter
-//  pointerleave touchstart touchend touchmove touchcancel`;
-
 const message = function (type, data) {
   return { type, data };
 };
@@ -37,12 +31,6 @@ const workerRun = function (container, script) {
       return _.map(events.split(' '), (event) => Rx.Observable.fromEvent(eventNode, event));
     }));
     const eventStream$ = Rx.Observable.merge(eventObservables).map((e) => {
-      const object = _.object(_.chain(e).
-        allKeys().
-        filter((key) => !_.isObject(e[key])).
-        map((key) => [ key, e[key] ]).
-        value());
-
       return {
         id: e.target.getAttribute('cycle-id'),
         type: e.type,
