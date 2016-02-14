@@ -5,7 +5,7 @@ const Rx = require('rx-dom');
 const { VNode, VText } = require('virtual-dom');
 const initializeConverter = require('html-to-vdom');
 const { patch } = require('vdom-serialized-patch');
-const toJson = require('vdom-as-json/toJson');
+const { toJson } = require('vdom-as-json');
 
 // const events = `blur focus focusin focusout load resize scroll unload click
 //  dblclick mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave

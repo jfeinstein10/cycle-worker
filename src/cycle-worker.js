@@ -3,7 +3,7 @@
 const Rx = require('rx');
 const { transposeVTree } = require('@cycle/dom/lib/transposition');
 const { diff } = require('virtual-dom');
-const fromJson = require('vdom-as-json/fromJson');
+const { fromJson } = require('vdom-as-json');
 const { serialize } = require('vdom-serialized-patch');
 const select = require('vtree-select');
 
